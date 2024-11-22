@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M224 128c21.3-12.8 46.7-12.8 68 0l128 70.4c19.2 11.2 32 31.2 32 53.6v140.8c0 22.4-12.8 42.4-32 53.6l-128 70.4c-21.3 12.8-46.7 12.8-68 0l-128-70.4c-19.2-11.2-32-31.2-32-53.6V252c0-22.4 12.8-42.4 32-53.6l128-70.4zM256 192v128M192 256h128" stroke="#000000" stroke-width="32" stroke-linecap="round"/>
+</svg>
