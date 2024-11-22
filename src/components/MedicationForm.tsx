@@ -52,9 +52,9 @@ export function MedicationForm({ medication, onSave, onClose }: MedicationFormPr
   const [formData, setFormData] = useState({
     name: medication?.name ?? '',
     dosage: {
-      amount: medication?.dosage.amount ?? 1,
-      unit: medication?.dosage.unit ?? 'pill',
-      concentration: medication?.dosage.concentration ?? 0
+      amount: medication?.dosage?.amount ?? 1,
+      unit: medication?.dosage?.unit ?? 'pill',
+      concentration: medication?.dosage?.concentration ?? 0
     },
     frequency: medication?.schedule?.frequency ?? 'daily',
     times: medication?.schedule?.times?.[0] ?? '09:00',
@@ -109,15 +109,15 @@ export function MedicationForm({ medication, onSave, onClose }: MedicationFormPr
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-gray-500/75 dark:bg-gray-900/80 flex items-center justify-center p-4 z-50">
+      <div className="bg-white dark:bg-gray-800 rounded-lg max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-semibold text-gray-900">
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
             {medication ? 'Edit' : 'Add'} Medication
           </h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-500"
+            className="text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-400 transition-colors"
           >
             <X className="h-5 w-5" />
           </button>
@@ -125,12 +125,19 @@ export function MedicationForm({ medication, onSave, onClose }: MedicationFormPr
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Medication</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Medication
+            </label>
             <input
               list="medications"
               value={formData.name}
               onChange={e => setFormData(prev => ({ ...prev, name: e.target.value }))}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 
+                bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm 
+                focus:border-indigo-500 dark:focus:border-indigo-400 
+                focus:ring-indigo-500 dark:focus:ring-indigo-400 
+                placeholder-gray-400 dark:placeholder-gray-500
+                transition-colors"
               required
               placeholder="Select or type medication name"
             />
@@ -143,7 +150,9 @@ export function MedicationForm({ medication, onSave, onClose }: MedicationFormPr
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">Amount</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                Amount
+              </label>
               <input
                 type="number"
                 value={formData.dosage.amount}
@@ -151,7 +160,11 @@ export function MedicationForm({ medication, onSave, onClose }: MedicationFormPr
                   ...prev,
                   dosage: { ...prev.dosage, amount: Number(e.target.value) }
                 }))}
-                className="mt-1 block w-full rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+                className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 
+                  bg-white dark:bg-gray-700 text-gray-900 dark:text-white 
+                  focus:border-indigo-500 dark:focus:border-indigo-400 
+                  focus:ring-indigo-500 dark:focus:ring-indigo-400
+                  transition-colors"
                 min="0.5"
                 step="0.5"
                 required
@@ -160,14 +173,20 @@ export function MedicationForm({ medication, onSave, onClose }: MedicationFormPr
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">Unit</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                Unit
+              </label>
               <select
                 value={formData.dosage.unit}
                 onChange={e => setFormData(prev => ({
                   ...prev,
-                  dosage: { ...prev.dosage, unit: e.target.value }
+                  dosage: { ...prev.dosage, unit: e.target.value as 'pill' | 'ml' | 'mg' }
                 }))}
-                className="mt-1 block w-full rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+                className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 
+                  bg-white dark:bg-gray-700 text-gray-900 dark:text-white 
+                  focus:border-indigo-500 dark:focus:border-indigo-400 
+                  focus:ring-indigo-500 dark:focus:ring-indigo-400
+                  transition-colors"
               >
                 <option value="pill">Pills</option>
                 <option value="ml">ML</option>
@@ -176,7 +195,9 @@ export function MedicationForm({ medication, onSave, onClose }: MedicationFormPr
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">Concentration (IU)</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                Concentration (IU)
+              </label>
               <input
                 type="number"
                 value={formData.dosage.concentration}
@@ -184,7 +205,11 @@ export function MedicationForm({ medication, onSave, onClose }: MedicationFormPr
                   ...prev,
                   dosage: { ...prev.dosage, concentration: Number(e.target.value) }
                 }))}
-                className="mt-1 block w-full rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+                className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 
+                  bg-white dark:bg-gray-700 text-gray-900 dark:text-white 
+                  focus:border-indigo-500 dark:focus:border-indigo-400 
+                  focus:ring-indigo-500 dark:focus:ring-indigo-400
+                  transition-colors"
                 min="0"
                 step="any"
                 required
@@ -194,18 +219,24 @@ export function MedicationForm({ medication, onSave, onClose }: MedicationFormPr
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Frequency</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Frequency
+            </label>
             <select
               value={formData.frequency}
               onChange={e => setFormData(prev => ({
                 ...prev,
-                frequency: e.target.value,
+                frequency: e.target.value as 'daily' | 'weekly' | 'monthly',
                 daysOfWeek: [],
                 months: [],
                 weeksOfMonth: [],
                 daysOfMonth: []
               }))}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 
+                bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm 
+                focus:border-indigo-500 dark:focus:border-indigo-400 
+                focus:ring-indigo-500 dark:focus:ring-indigo-400
+                transition-colors"
             >
               <option value="daily">Daily</option>
               <option value="weekly">Weekly</option>
@@ -215,7 +246,9 @@ export function MedicationForm({ medication, onSave, onClose }: MedicationFormPr
 
           {formData.frequency === 'weekly' && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Days of Week</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Days of Week
+              </label>
               <div className="grid grid-cols-7 gap-2">
                 {DAYS_OF_WEEK.map(day => (
                   <button
@@ -226,10 +259,10 @@ export function MedicationForm({ medication, onSave, onClose }: MedicationFormPr
                       formData.daysOfWeek,
                       (values) => setFormData(prev => ({ ...prev, daysOfWeek: values }))
                     )}
-                    className={`p-2 text-xs rounded-md ${
+                    className={`p-2 text-xs rounded-md transition-colors ${
                       formData.daysOfWeek.includes(day.value)
-                        ? 'bg-indigo-600 text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        ? 'bg-indigo-600 dark:bg-indigo-500 text-white'
+                        : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                     }`}
                   >
                     {day.label.slice(0, 3)}
@@ -237,7 +270,7 @@ export function MedicationForm({ medication, onSave, onClose }: MedicationFormPr
                 ))}
               </div>
               {formData.daysOfWeek.length === 0 && (
-                <p className="mt-2 text-sm text-red-600">Please select at least one day</p>
+                <p className="mt-2 text-sm text-red-600 dark:text-red-400">Please select at least one day</p>
               )}
             </div>
           )}
@@ -245,7 +278,9 @@ export function MedicationForm({ medication, onSave, onClose }: MedicationFormPr
           {formData.frequency === 'monthly' && (
             <>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Months</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Months
+                </label>
                 <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
                   {MONTHS.map(month => (
                     <button
@@ -256,10 +291,10 @@ export function MedicationForm({ medication, onSave, onClose }: MedicationFormPr
                         formData.months,
                         (values) => setFormData(prev => ({ ...prev, months: values }))
                       )}
-                      className={`p-2 text-xs rounded-md ${
+                      className={`p-2 text-xs rounded-md transition-colors ${
                         formData.months.includes(month.value)
-                          ? 'bg-indigo-600 text-white'
-                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                          ? 'bg-indigo-600 dark:bg-indigo-500 text-white'
+                          : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                       }`}
                     >
                       {month.label.slice(0, 3)}
@@ -267,12 +302,14 @@ export function MedicationForm({ medication, onSave, onClose }: MedicationFormPr
                   ))}
                 </div>
                 {formData.months.length === 0 && (
-                  <p className="mt-2 text-sm text-red-600">Please select at least one month</p>
+                  <p className="mt-2 text-sm text-red-600 dark:text-red-400">Please select at least one month</p>
                 )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Weeks</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Weeks
+                </label>
                 <div className="grid grid-cols-2 gap-2">
                   {WEEKS.map(week => (
                     <button
@@ -283,10 +320,10 @@ export function MedicationForm({ medication, onSave, onClose }: MedicationFormPr
                         formData.weeksOfMonth,
                         (values) => setFormData(prev => ({ ...prev, weeksOfMonth: values }))
                       )}
-                      className={`p-2 text-xs rounded-md ${
+                      className={`p-2 text-xs rounded-md transition-colors ${
                         formData.weeksOfMonth.includes(week.value)
-                          ? 'bg-indigo-600 text-white'
-                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                          ? 'bg-indigo-600 dark:bg-indigo-500 text-white'
+                          : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                       }`}
                     >
                       {week.label}
@@ -294,12 +331,14 @@ export function MedicationForm({ medication, onSave, onClose }: MedicationFormPr
                   ))}
                 </div>
                 {formData.weeksOfMonth.length === 0 && (
-                  <p className="mt-2 text-sm text-red-600">Please select at least one week</p>
+                  <p className="mt-2 text-sm text-red-600 dark:text-red-400">Please select at least one week</p>
                 )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Days</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Days
+                </label>
                 <div className="grid grid-cols-7 gap-2">
                   {DAYS_OF_WEEK.map(day => (
                     <button
@@ -310,10 +349,10 @@ export function MedicationForm({ medication, onSave, onClose }: MedicationFormPr
                         formData.daysOfMonth,
                         (values) => setFormData(prev => ({ ...prev, daysOfMonth: values }))
                       )}
-                      className={`p-2 text-xs rounded-md ${
+                      className={`p-2 text-xs rounded-md transition-colors ${
                         formData.daysOfMonth.includes(day.value)
-                          ? 'bg-indigo-600 text-white'
-                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                          ? 'bg-indigo-600 dark:bg-indigo-500 text-white'
+                          : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                       }`}
                     >
                       {day.label.slice(0, 3)}
@@ -321,30 +360,42 @@ export function MedicationForm({ medication, onSave, onClose }: MedicationFormPr
                   ))}
                 </div>
                 {formData.daysOfMonth.length === 0 && (
-                  <p className="mt-2 text-sm text-red-600">Please select at least one day</p>
+                  <p className="mt-2 text-sm text-red-600 dark:text-red-400">Please select at least one day</p>
                 )}
               </div>
             </>
           )}
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Time</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Time
+            </label>
             <input
               type="time"
               value={formData.times}
               onChange={e => setFormData(prev => ({ ...prev, times: e.target.value }))}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 
+                bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm 
+                focus:border-indigo-500 dark:focus:border-indigo-400 
+                focus:ring-indigo-500 dark:focus:ring-indigo-400
+                transition-colors"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Inventory</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Inventory
+            </label>
             <input
               type="number"
               value={formData.inventory}
               onChange={e => setFormData(prev => ({ ...prev, inventory: Number(e.target.value) }))}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 
+                bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm 
+                focus:border-indigo-500 dark:focus:border-indigo-400 
+                focus:ring-indigo-500 dark:focus:ring-indigo-400
+                transition-colors"
               min="0"
               required
             />
@@ -354,14 +405,21 @@ export function MedicationForm({ medication, onSave, onClose }: MedicationFormPr
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
+              className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md 
+                text-sm font-medium text-gray-700 dark:text-gray-300 
+                hover:bg-gray-50 dark:hover:bg-gray-700 
+                transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={!isFormValid()}
-              className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+              className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm 
+                font-medium text-white bg-indigo-600 dark:bg-indigo-500 
+                hover:bg-indigo-700 dark:hover:bg-indigo-600 
+                disabled:bg-gray-400 dark:disabled:bg-gray-600 
+                disabled:cursor-not-allowed transition-colors"
             >
               Save
             </button>

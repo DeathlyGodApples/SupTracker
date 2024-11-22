@@ -96,7 +96,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
       <Header
         viewMode={viewMode}
         setViewMode={setViewMode}
@@ -125,10 +125,18 @@ export default function App() {
               ))}
               {medications.length === 0 && (
                 <div className="col-span-full text-center py-12">
-                  <p className="text-gray-500">No medications added yet.</p>
+                  <p className="text-gray-500 dark:text-gray-400">
+                    No medications added yet.
+                  </p>
                   <button
                     onClick={() => setShowForm(true)}
-                    className="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700"
+                    className="mt-4 inline-flex items-center px-4 py-2 border 
+                      border-transparent text-sm font-medium rounded-md shadow-sm 
+                      text-white bg-indigo-600 hover:bg-indigo-700 
+                      dark:bg-indigo-500 dark:hover:bg-indigo-600 
+                      focus:outline-none focus:ring-2 focus:ring-offset-2 
+                      focus:ring-indigo-500 dark:focus:ring-offset-gray-900 
+                      transition-colors duration-200"
                   >
                     Add Your First Medication
                   </button>

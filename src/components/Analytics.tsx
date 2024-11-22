@@ -86,53 +86,65 @@ export function Analytics({ medications, logs }: AnalyticsProps) {
   });
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 p-6 bg-gray-50 dark:bg-gray-900 min-h-screen">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <MetricCard
-          title="Active Medications"
-          value={activeMedications}
-          icon={Users}
-          color="text-purple-700"
-          bgColor="bg-purple-50"
-        />
-        <MetricCard
-          title="Total Doses Taken"
-          value={totalDoses}
-          icon={PieChart}
-          color="text-green-700"
-          bgColor="bg-green-50"
-        />
-        <MetricCard
-          title="Daily Reminders"
-          value={dailyReminders}
-          icon={Clock}
-          color="text-orange-700"
-          bgColor="bg-orange-50"
-        />
-        <MetricCard
-          title="Compliance Rate"
-          value={`${calculateComplianceRate()}%`}
-          icon={TrendingUp}
-          color="text-blue-700"
-          bgColor="bg-blue-50"
-        />
+      <MetricCard
+        title="Active Medications"
+        value={activeMedications}
+        icon={Users}
+        color="text-purple-600 dark:text-purple-400"
+        bgColor="bg-purple-50 dark:bg-purple-900/20"
+      />
+      <MetricCard
+        title="Total Doses Taken"
+        value={totalDoses}
+        icon={PieChart}
+        color="text-green-600 dark:text-green-400"
+        bgColor="bg-green-50 dark:bg-green-900/20"
+      />
+      <MetricCard
+        title="Daily Reminders"
+        value={dailyReminders}
+        icon={Clock}
+        color="text-orange-600 dark:text-orange-400"
+        bgColor="bg-orange-50 dark:bg-orange-900/20"
+      />
+      <MetricCard
+        title="Compliance Rate"
+        value={`${calculateComplianceRate()}%`}
+        icon={TrendingUp}
+        color="text-blue-600 dark:text-blue-400"
+        bgColor="bg-blue-50 dark:bg-blue-900/20"
+      />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">30-Day Engagement</h3>
-          <EngagementChart data={engagementData} />
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+          <div className="p-6">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+              30-Day Engagement
+            </h3>
+            <EngagementChart data={engagementData} />
+          </div>
         </div>
         
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Compliance by Medication</h3>
-          <ComplianceChart data={complianceData} />
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+          <div className="p-6">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+              Compliance by Medication
+            </h3>
+            <ComplianceChart data={complianceData} />
+          </div>
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Daily Distribution</h3>
-        <DailyDistributionChart data={distributionData} />
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+        <div className="p-6">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+            Daily Distribution
+          </h3>
+          <DailyDistributionChart data={distributionData} />
+        </div>
       </div>
     </div>
   );
