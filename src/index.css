@@ -2,6 +2,51 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Add smooth transitions for dark mode */
+html {
+  transition: background-color 0.2s ease-in-out;
+}
+
+body {
+  @apply antialiased;
+}
+
+/* Chart theme variables */
+:root {
+  --chart-grid: #E5E7EB;
+  --chart-text: #4B5563;
+  --chart-bg: #FFFFFF;
+  --chart-tooltip-bg: #FFFFFF;
+  --chart-tooltip-text: #111827;
+}
+
+.dark {
+  --chart-grid: #374151;
+  --chart-text: #9CA3AF;
+  --chart-bg: #1F2937;
+  --chart-tooltip-bg: #1F2937;
+  --chart-tooltip-text: #F3F4F6;
+}
+
+/* Optional: Add dark mode scrollbar styles */
+@media (prefers-color-scheme: dark) {
+  ::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-gray-800;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gray-600 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-500;
+  }
+}
+
 @layer base {
   body {
     @apply antialiased text-gray-900;
