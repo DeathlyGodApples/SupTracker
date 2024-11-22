@@ -8,7 +8,14 @@ interface MedicationFormProps {
   onClose: () => void;
 }
 
-const MEDICATIONS = ['Iron', 'Vitamin D', 'B12', 'Magnesium', 'Zinc'];
+const MEDICATIONS = [
+  { value: 'Iron', label: 'Iron' },
+  { value: 'Vitamin D', label: 'Vitamin D' },
+  { value: 'B12', label: 'B12' },
+  { value: 'Magnesium', label: 'Magnesium' },
+  { value: 'Zinc', label: 'Zinc' }
+];
+
 const DAYS_OF_WEEK = [
   { value: 0, label: 'Sunday' },
   { value: 1, label: 'Monday' },
@@ -43,7 +50,7 @@ const WEEKS = [
 
 export function MedicationForm({ medication, onSave, onClose }: MedicationFormProps) {
   const [formData, setFormData] = useState({
-    name: medication?.name ?? MEDICATIONS[0],
+    name: medication?.name ?? '',
     dosage: {
       amount: medication?.dosage.amount ?? 1,
       unit: medication?.dosage.unit ?? 'pill',
@@ -119,16 +126,19 @@ export function MedicationForm({ medication, onSave, onClose }: MedicationFormPr
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label className="block text-sm font-medium text-gray-700">Medication</label>
-            <select
+            <input
+              list="medications"
               value={formData.name}
               onChange={e => setFormData(prev => ({ ...prev, name: e.target.value }))}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
               required
-            >
+              placeholder="Select or type medication name"
+            />
+            <datalist id="medications">
               {MEDICATIONS.map(med => (
-                <option key={med} value={med}>{med}</option>
+                <option key={med.value} value={med.value}>{med.label}</option>
               ))}
-            </select>
+            </datalist>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
