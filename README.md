@@ -1,3 +1,3 @@
 # SupTracker
 
-[Edit in StackBlitz next generation editor ⚡️](https://stackblitz.com/~/github.com/DeathlyGodApples/SupTracker)
+fairly simple Supplement/medicine tracker to keep track of supplements :/
