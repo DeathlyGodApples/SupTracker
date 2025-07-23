@@ -192,7 +192,7 @@ export default function App() {
             <p className="text-gray-600 dark:text-gray-400">Loading your medications...</p>
           </div>
         ) : (
-        {viewMode === 'medications' ? (
+        viewMode === 'medications' ? (
           <>
             <Calendar
               medications={medications}
@@ -236,7 +236,7 @@ export default function App() {
           </>
         ) : (
           <Analytics medications={medications} logs={logs} />
-        )}
+        )
         )}
       </main>
 
