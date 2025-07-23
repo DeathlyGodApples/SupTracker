@@ -2,27 +2,25 @@ import React from 'react'
 import { Clock, Crown, Loader2 } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import { useStripe } from '../hooks/useStripe'
+import { useSubscription } from '../hooks/useSubscription'
+import { STRIPE_PRODUCTS } from '../stripe-config'
 
 export function TrialBanner() {
-  const { profile, isPremium, isTrialExpired } = useAuth()
+  const { profile } = useAuth()
+  const { subscription, isPremium, isActive } = useSubscription()
   const { createCheckoutSession, loading, error } = useStripe()
 
   if (isPremium || !profile) return null
 
   const handleUpgrade = async () => {
-    const priceId = import.meta.env.VITE_STRIPE_PRICE_ID
-    
-    if (!priceId) {
-      console.error('Stripe Price ID not configured')
-      return
-    }
-
-    await createCheckoutSession(priceId)
+    const product = STRIPE_PRODUCTS[0] // MedTracker Premium Subscription
+    await createCheckoutSession(product.priceId, product.mode)
   }
 
   const trialEndsAt = new Date(profile.trial_ends_at)
   const now = new Date()
   const daysLeft = Math.max(0, Math.ceil((trialEndsAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)))
+  const isTrialExpired = daysLeft === 0
 
   if (isTrialExpired) {
     return (

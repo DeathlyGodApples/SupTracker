@@ -1,6 +1,7 @@
 import React from 'react'
 import { Crown, X, Check, Loader2 } from 'lucide-react'
 import { useStripe } from '../hooks/useStripe'
+import { STRIPE_PRODUCTS } from '../stripe-config'
 
 interface UpgradePromptProps {
   isOpen: boolean
@@ -16,15 +17,8 @@ export function UpgradePrompt({ isOpen, onClose, title, description, feature }: 
   if (!isOpen) return null
 
   const handleUpgrade = async () => {
-    // Replace with your actual Stripe Price ID
-    const priceId = import.meta.env.VITE_STRIPE_PRICE_ID
-    
-    if (!priceId) {
-      console.error('Stripe Price ID not configured')
-      return
-    }
-
-    await createCheckoutSession(priceId)
+    const product = STRIPE_PRODUCTS[0] // MedTracker Premium Subscription
+    await createCheckoutSession(product.priceId, product.mode)
   }
 
   const features = [
@@ -35,6 +29,8 @@ export function UpgradePrompt({ isOpen, onClose, title, description, feature }: 
     'Priority support',
     'Export data (PDF, CSV)'
   ]
+
+  const product = STRIPE_PRODUCTS[0]
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
@@ -60,8 +56,11 @@ export function UpgradePrompt({ isOpen, onClose, title, description, feature }: 
 
         <div className="bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 rounded-lg p-4 mb-6">
           <h3 className="font-semibold text-gray-900 dark:text-white mb-3">
-            Premium Features Include:
+            {product.name}
           </h3>
+          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+            {product.description}
+          </p>
           <ul className="space-y-2">
             {features.map((feature, index) => (
               <li key={index} className="flex items-center text-sm text-gray-700 dark:text-gray-300">
@@ -84,7 +83,7 @@ export function UpgradePrompt({ isOpen, onClose, title, description, feature }: 
                 Processing...
               </>
             ) : (
-              'Upgrade to Premium - $9.99/month'
+              `Upgrade to Premium - ${product.price}`
             )}
           </button>
           

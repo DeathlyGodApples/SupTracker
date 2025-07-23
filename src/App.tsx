@@ -10,12 +10,14 @@ import { MedicationCard } from './components/MedicationCard';
 import { MedicationForm } from './components/MedicationForm';
 import { Analytics } from './components/Analytics';
 import { useAuth } from './contexts/AuthContext';
+import { useSubscription } from './hooks/useSubscription';
 import { useSupabaseMedications } from './hooks/useSupabaseMedications';
 import { useNotifications } from './hooks/useNotifications';
 import type { Medication, MedicationLog, ViewMode } from './types';
 
 export default function App() {
-  const { user, loading: authLoading, isPremium, isTrialExpired } = useAuth();
+  const { user, loading: authLoading } = useAuth();
+  const { isPremium, isActive, loading: subscriptionLoading } = useSubscription();
   
   // Handle success/cancel pages
   const currentPath = window.location.pathname;
@@ -53,7 +55,7 @@ export default function App() {
   const { scheduleNotification } = useNotifications();
 
   // Show auth wrapper if not authenticated
-  if (authLoading) {
+  if (authLoading || subscriptionLoading) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
@@ -68,11 +70,11 @@ export default function App() {
     return <AuthWrapper />;
   }
 
-  // Check if user can access analytics
-  const canAccessAnalytics = isPremium || !isTrialExpired;
+  // Check if user can access analytics (premium feature)
+  const canAccessAnalytics = isPremium;
   
-  // Check if user can add more medications
-  const canAddMedication = isPremium || !isTrialExpired || medications.length === 0;
+  // Check if user can add more medications (free users limited to 1)
+  const canAddMedication = isPremium || medications.length === 0;
 
   // Prevent analytics access for free users
   useEffect(() => {
@@ -210,7 +212,7 @@ export default function App() {
               medications={medications}
               logs={logs}
               isPremium={isPremium}
-              isTrialExpired={isTrialExpired}
+              isTrialExpired={!isPremium}
             />
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {medications.map(medication => (
