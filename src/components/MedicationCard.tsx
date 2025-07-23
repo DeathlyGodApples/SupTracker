@@ -22,7 +22,7 @@ interface MedicationCardProps {
   onEdit: (medication: Medication) => void;
   onDelete: (id: string) => void;
   onUndo: (logId: string) => void;
-  logs: { id: string; timestamp: string; status: string }[];
+  logs: { id: string; timestamp: string; status: string; medication_id?: string }[];
 }
 
 const DAYS_OF_WEEK = [

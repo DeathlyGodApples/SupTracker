@@ -17,6 +17,8 @@ interface CalendarProps {
   medications: Medication[];
   logs: MedicationLog[];
   currentDate?: Date;
+  isPremium?: boolean;
+  isTrialExpired?: boolean;
 }
 
 const WEEKDAYS = [
@@ -29,7 +31,7 @@ const WEEKDAYS = [
   { key: 'sat', label: 'Sa', fullLabel: 'Saturday' }
 ];
 
-export function Calendar({ medications, logs, currentDate = new Date() }: CalendarProps) {
+export function Calendar({ medications, logs, currentDate = new Date(), isPremium = false, isTrialExpired = false }: CalendarProps) {
   const [view, setView] = useState<CalendarView>('month');
   const [selectedDate, setSelectedDate] = useState(currentDate);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -37,6 +39,11 @@ export function Calendar({ medications, logs, currentDate = new Date() }: Calend
     start: currentDate.getFullYear(),
     end: currentDate.getFullYear() + 4
   });
+
+  // Check if user can navigate calendar
+  const canNavigateCalendar = isPremium || !isTrialExpired;
+  const currentMonth = new Date().getMonth();
+  const currentYear = new Date().getFullYear();
 
   const monthStart = startOfMonth(selectedDate);
   const monthEnd = endOfMonth(selectedDate);
@@ -122,6 +129,15 @@ export function Calendar({ medications, logs, currentDate = new Date() }: Calend
   const handleDateChange = useCallback((amount: number) => {
     setIsTransitioning(true);
     setTimeout(() => {
+      // Restrict navigation for free users to current month only
+      if (!canNavigateCalendar) {
+        const newDate = view === 'month' ? addMonths(selectedDate, amount) : addYears(selectedDate, amount);
+        if (view === 'month' && (newDate.getMonth() !== currentMonth || newDate.getFullYear() !== currentYear)) {
+          setIsTransitioning(false);
+          return;
+        }
+      }
+
       if (view === 'month') {
         setSelectedDate(prev => addMonths(prev, amount));
       } else if (view === 'year') {
@@ -148,12 +164,14 @@ export function Calendar({ medications, logs, currentDate = new Date() }: Calend
         <div className="flex items-center justify-center w-full sm:w-auto">
           <button
             onClick={() => handleDateChange(-1)}
+            disabled={!canNavigateCalendar && view === 'month' && 
+              (selectedDate.getMonth() === currentMonth && selectedDate.getFullYear() === currentYear)}
             className="p-1.5 sm:p-2 hover:bg-gray-100 dark:hover:bg-gray-700 
               rounded-full text-gray-500 dark:text-gray-400 
               transition-all duration-200 hover:scale-110 
               active:scale-95 focus:outline-none focus:ring-2 
               focus:ring-indigo-500 dark:focus:ring-indigo-400
-              transform-gpu mr-2 sm:mr-4"
+              transform-gpu mr-2 sm:mr-4 disabled:opacity-50 disabled:cursor-not-allowed"
             aria-label="Previous period"
           >
             <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5 transition-transform 
@@ -173,12 +191,14 @@ export function Calendar({ medications, logs, currentDate = new Date() }: Calend
 
           <button
             onClick={() => handleDateChange(1)}
+            disabled={!canNavigateCalendar && view === 'month' && 
+              (selectedDate.getMonth() === currentMonth && selectedDate.getFullYear() === currentYear)}
             className="p-1.5 sm:p-2 hover:bg-gray-100 dark:hover:bg-gray-700 
               rounded-full text-gray-500 dark:text-gray-400 
               transition-all duration-200 hover:scale-110 
               active:scale-95 focus:outline-none focus:ring-2 
               focus:ring-indigo-500 dark:focus:ring-indigo-400
-              transform-gpu ml-2 sm:ml-4"
+              transform-gpu ml-2 sm:ml-4 disabled:opacity-50 disabled:cursor-not-allowed"
             aria-label="Next period"
           >
             <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5 transition-transform 
@@ -191,6 +211,7 @@ export function Calendar({ medications, logs, currentDate = new Date() }: Calend
             <select
               value={view}
               onChange={(e) => handleViewChange(e.target.value as CalendarView)}
+              disabled={!canNavigateCalendar}
               className="w-full appearance-none rounded-md border border-gray-300 
                 dark:border-gray-600 px-3 py-1.5 sm:px-4 sm:py-2 pr-8 text-sm 
                 font-medium bg-white dark:bg-gray-700 text-gray-900 dark:text-white 
@@ -198,11 +219,11 @@ export function Calendar({ medications, logs, currentDate = new Date() }: Calend
                 focus:border-indigo-500 dark:focus:border-indigo-400 
                 transition-all duration-200 hover:border-indigo-500 
                 dark:hover:border-indigo-400 cursor-pointer transform-gpu 
-                hover:-translate-y-0.5 shadow-sm hover:shadow"
+                hover:-translate-y-0.5 shadow-sm hover:shadow disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <option value="month">Month View</option>
-              <option value="year">Year View</option>
-              <option value="multi-year">Multi-Year View</option>
+              <option value="year" disabled={!canNavigateCalendar}>Year View {!canNavigateCalendar && '(Premium)'}</option>
+              <option value="multi-year" disabled={!canNavigateCalendar}>Multi-Year View {!canNavigateCalendar && '(Premium)'}</option>
             </select>
             <div className="pointer-events-none absolute inset-y-0 right-0 
               flex items-center px-2 text-gray-500 dark:text-gray-400">
@@ -211,6 +232,16 @@ export function Calendar({ medications, logs, currentDate = new Date() }: Calend
           </div>
         </div>
       </div>
+
+      {/* Free user calendar restriction notice */}
+      {!canNavigateCalendar && (
+        <div className="mb-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-3">
+          <p className="text-sm text-yellow-800 dark:text-yellow-200">
+            <span className="font-medium">Limited View:</span> Free users can only view the current month. 
+            Upgrade to premium to access full calendar navigation and historical data.
+          </p>
+        </div>
+      )}
 
       <div className={`transition-all duration-300 ease-in-out
         ${isTransitioning ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'}`}>

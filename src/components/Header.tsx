@@ -20,6 +20,7 @@ interface HeaderProps {
   viewMode: ViewMode;
   setViewMode: (mode: ViewMode) => void;
   onAddMedication: () => void;
+  canAccessAnalytics: boolean;
 }
 
 // Predefined medication options for the application
@@ -66,7 +67,7 @@ const WEEKS = [
   { value: 4, label: 'Fourth Week' },
 ];
 
-export function Header({ viewMode, setViewMode, onAddMedication }: HeaderProps) {
+export function Header({ viewMode, setViewMode, onAddMedication, canAccessAnalytics }: HeaderProps) {
   // Hooks for notifications and dark mode
   const { 
     permission, 
@@ -75,6 +76,7 @@ export function Header({ viewMode, setViewMode, onAddMedication }: HeaderProps) 
     testNotification 
   } = useNotifications();
   const [isDark, setIsDark] = useDarkMode();
+  const { signOut, isPremium, isTrialExpired } = useAuth();
 
   // Handler for requesting notification permissions
   const handleRequestPermission = async () => {
@@ -130,13 +132,21 @@ export function Header({ viewMode, setViewMode, onAddMedication }: HeaderProps) 
               </button>
               <button
                 onClick={() => setViewMode('analytics')}
+                disabled={!canAccessAnalytics}
                 className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 
-                  ${viewMode === 'analytics'
+                  ${!canAccessAnalytics 
+                    ? 'text-gray-300 dark:text-gray-600 cursor-not-allowed'
+                    : viewMode === 'analytics'
                     ? 'bg-indigo-50 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 shadow-sm'
                     : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50'
                   }`}
               >
                 Analytics
+                {!canAccessAnalytics && (
+                  <span className="ml-1 text-xs bg-yellow-100 text-yellow-800 px-1.5 py-0.5 rounded-full">
+                    Premium
+                  </span>
+                )}
               </button>
             </nav>
           </div>
@@ -196,6 +206,23 @@ export function Header({ viewMode, setViewMode, onAddMedication }: HeaderProps) 
               <span className="hidden sm:inline">{isDark ? 'Light' : 'Dark'}</span>
             </button>
 
+            {/* User menu */}
+            <div className="relative">
+              <button
+                onClick={signOut}
+                className="inline-flex items-center p-1.5 sm:px-3 sm:py-1.5 border border-transparent 
+                  text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 
+                  bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 
+                  dark:hover:bg-gray-600 focus:outline-none focus:ring-2 
+                  focus:ring-offset-2 focus:ring-gray-500 dark:focus:ring-offset-gray-800 
+                  transition-all duration-200 hover:-translate-y-0.5"
+                title="Sign out"
+              >
+                <span className="hidden sm:inline">Sign Out</span>
+                <span className="sm:hidden">Out</span>
+              </button>
+            </div>
+
             {/* Add medication button - mobile optimized */}
             <button
               onClick={onAddMedication}
@@ -228,14 +255,22 @@ export function Header({ viewMode, setViewMode, onAddMedication }: HeaderProps) 
             </button>
             <button
               onClick={() => setViewMode('analytics')}
+              disabled={!canAccessAnalytics}
               className={`flex-1 px-2 py-1.5 rounded-md text-sm font-medium 
-                transition-all duration-200 ${
-                viewMode === 'analytics'
+                transition-all duration-200 relative ${
+                !canAccessAnalytics 
+                  ? 'text-gray-300 dark:text-gray-600 cursor-not-allowed'
+                  : viewMode === 'analytics'
                   ? 'bg-indigo-50 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 shadow-sm'
                   : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50'
               }`}
             >
               Analytics
+              {!canAccessAnalytics && (
+                <span className="absolute -top-1 -right-1 text-xs bg-yellow-100 text-yellow-800 px-1 py-0.5 rounded-full">
+                  Pro
+                </span>
+              )}
             </button>
           </nav>
         </div>
