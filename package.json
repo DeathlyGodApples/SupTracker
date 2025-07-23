@@ -10,12 +10,14 @@
     "generate-pwa-assets": "pwa-assets-generator --preset minimal public/icon.svg"
   },
   "dependencies": {
+    "@stripe/stripe-js": "^7.6.1",
     "@supabase/supabase-js": "^2.52.0",
     "date-fns": "^3.3.1",
     "lucide-react": "^0.344.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "recharts": "^2.12.2",
+    "stripe": "^18.3.0",
     "use-sound": "^4.0.1",
     "workbox-precaching": "^7.0.0",
     "workbox-routing": "^7.0.0",

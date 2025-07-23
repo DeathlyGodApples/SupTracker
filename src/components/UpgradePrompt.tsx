@@ -1,5 +1,6 @@
 import React from 'react'
-import { Crown, X, Check } from 'lucide-react'
+import { Crown, X, Check, Loader2 } from 'lucide-react'
+import { useStripe } from '../hooks/useStripe'
 
 interface UpgradePromptProps {
   isOpen: boolean
@@ -10,7 +11,21 @@ interface UpgradePromptProps {
 }
 
 export function UpgradePrompt({ isOpen, onClose, title, description, feature }: UpgradePromptProps) {
+  const { createCheckoutSession, loading, error } = useStripe()
+
   if (!isOpen) return null
+
+  const handleUpgrade = async () => {
+    // Replace with your actual Stripe Price ID
+    const priceId = import.meta.env.VITE_STRIPE_PRICE_ID
+    
+    if (!priceId) {
+      console.error('Stripe Price ID not configured')
+      return
+    }
+
+    await createCheckoutSession(priceId)
+  }
 
   const features = [
     'Unlimited medications',
@@ -59,14 +74,26 @@ export function UpgradePrompt({ isOpen, onClose, title, description, feature }: 
 
         <div className="space-y-3">
           <button
-            onClick={() => {
-              // TODO: Implement payment flow
-              console.log('Upgrade to premium')
-            }}
-            className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 transform hover:scale-105"
+            onClick={handleUpgrade}
+            disabled={loading}
+            className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
           >
-            Upgrade to Premium - $9.99/month
+            {loading ? (
+              <>
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                Processing...
+              </>
+            ) : (
+              'Upgrade to Premium - $9.99/month'
+            )}
           </button>
+          
+          {error && (
+            <div className="text-red-600 text-sm text-center">
+              {error}
+            </div>
+          )}
+          
           <button
             onClick={onClose}
             className="w-full border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 font-medium py-3 px-4 rounded-lg transition-colors"

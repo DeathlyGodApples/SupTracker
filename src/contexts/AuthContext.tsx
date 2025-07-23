@@ -6,6 +6,8 @@ interface Profile {
   id: string
   is_premium: boolean
   trial_ends_at: string
+  stripe_customer_id?: string
+  stripe_subscription_id?: string
   created_at: string
   updated_at: string
 }

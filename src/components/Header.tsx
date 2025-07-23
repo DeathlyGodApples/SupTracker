@@ -13,6 +13,8 @@
 import { Bell, Bug, Moon, Sun, Pill } from 'lucide-react';
 import { useNotifications } from '../hooks/useNotifications';
 import { useDarkMode } from '../hooks/useDarkMode';
+import { UserMenu } from './UserMenu';
+import { useAuth } from '../contexts/AuthContext';
 import type { ViewMode } from '../types';
 import { debug } from '../utils/debug';
 
@@ -76,7 +78,6 @@ export function Header({ viewMode, setViewMode, onAddMedication, canAccessAnalyt
     testNotification 
   } = useNotifications();
   const [isDark, setIsDark] = useDarkMode();
-  const { signOut, isPremium, isTrialExpired } = useAuth();
 
   // Handler for requesting notification permissions
   const handleRequestPermission = async () => {
@@ -206,22 +207,8 @@ export function Header({ viewMode, setViewMode, onAddMedication, canAccessAnalyt
               <span className="hidden sm:inline">{isDark ? 'Light' : 'Dark'}</span>
             </button>
 
-            {/* User menu */}
-            <div className="relative">
-              <button
-                onClick={signOut}
-                className="inline-flex items-center p-1.5 sm:px-3 sm:py-1.5 border border-transparent 
-                  text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 
-                  bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 
-                  dark:hover:bg-gray-600 focus:outline-none focus:ring-2 
-                  focus:ring-offset-2 focus:ring-gray-500 dark:focus:ring-offset-gray-800 
-                  transition-all duration-200 hover:-translate-y-0.5"
-                title="Sign out"
-              >
-                <span className="hidden sm:inline">Sign Out</span>
-                <span className="sm:hidden">Out</span>
-              </button>
-            </div>
+            {/* User menu with billing management */}
+            <UserMenu />
 
             {/* Add medication button - mobile optimized */}
             <button

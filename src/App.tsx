@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { AuthWrapper } from './components/Auth/AuthWrapper';
+import { SuccessPage } from './components/SuccessPage';
+import { CancelPage } from './components/CancelPage';
 import { TrialBanner } from './components/TrialBanner';
 import { UpgradePrompt } from './components/UpgradePrompt';
 import { Header } from './components/Header';
@@ -14,6 +16,16 @@ import type { Medication, MedicationLog, ViewMode } from './types';
 
 export default function App() {
   const { user, loading: authLoading, isPremium, isTrialExpired } = useAuth();
+  
+  // Handle success/cancel pages
+  const currentPath = window.location.pathname;
+  if (currentPath === '/success') {
+    return <SuccessPage />;
+  }
+  if (currentPath === '/cancel') {
+    return <CancelPage />;
+  }
+  
   const { 
     medications, 
     logs, 
