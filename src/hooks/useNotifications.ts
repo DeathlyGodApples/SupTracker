@@ -7,7 +7,7 @@ const NOTIFICATION_SOUND = '/notification.mp3';
 
 interface ScheduledNotification {
   id: string;
-  medicationId: string;
+  medication_id: string; // Changed to match database schema
   type: 'hour' | 'tenMin' | 'main';
   scheduledTime: Date;
   timeoutId: number;
@@ -186,13 +186,13 @@ export function useNotifications() {
 
   const scheduleNotificationInternal = useCallback((medication: Medication) => {
     debug.log('notification', 'info', 'Scheduling notifications for medication', {
-      medicationId: medication.id,
+      medication_id: medication.id,
       name: medication.name
     });
 
     // Clear existing notifications for this medication
     scheduledNotifications.current = scheduledNotifications.current.filter(notification => {
-      if (notification.medicationId === medication.id) {
+      if (notification.medication_id === medication.id) {
         clearTimeout(notification.timeoutId);
         return false;
       }
@@ -214,7 +214,7 @@ export function useNotifications() {
       const tenMinutesBefore = new Date(scheduledTime.getTime() - 10 * 60 * 1000);
 
       debug.log('notification', 'info', 'Scheduling reminders for time', {
-        medicationId: medication.id,
+        medication_id: medication.id,
         time: timeStr,
         mainTime: scheduledTime.toISOString(),
         oneHourBefore: oneHourBefore.toISOString(),
@@ -241,14 +241,14 @@ export function useNotifications() {
 
           scheduledNotifications.current.push({
             id: crypto.randomUUID(),
-            medicationId: medication.id,
+            medication_id: medication.id,
             type: type as 'hour' | 'tenMin' | 'main',
             scheduledTime: time,
             timeoutId
           });
 
           debug.log('notification', 'info', 'Scheduled notification', {
-            medicationId: medication.id,
+            medication_id: medication.id,
             type,
             scheduledTime: time.toISOString(),
             delay
@@ -272,7 +272,7 @@ export function useNotifications() {
 
   const scheduleNotification = useCallback((medication: Medication) => {
     debug.log('notification', 'info', 'Attempting to schedule notification', {
-      medicationId: medication.id,
+      medication_id: medication.id,
       permission: permissionRef.current
     });
 

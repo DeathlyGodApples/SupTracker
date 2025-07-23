@@ -11,14 +11,24 @@ export function useSupabaseMedications() {
 
   useEffect(() => {
     if (user) {
-      fetchMedications()
-      fetchLogs()
+      loadData()
     } else {
       setMedications([])
       setLogs([])
       setLoading(false)
     }
   }, [user])
+
+  const loadData = async () => {
+    setLoading(true)
+    try {
+      await Promise.all([fetchMedications(), fetchLogs()])
+    } catch (error) {
+      console.error('Error loading data:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const fetchMedications = async () => {
     if (!user) return
@@ -37,9 +47,8 @@ export function useSupabaseMedications() {
       }
     } catch (error) {
       console.error('Error in fetchMedications:', error)
-    } finally {
-      setLoading(false)
     }
+    // Removed the finally block since loading is handled in loadData
   }
 
   const fetchLogs = async () => {
@@ -62,7 +71,7 @@ export function useSupabaseMedications() {
     }
   }
 
-  const saveMedication = async (medicationData: Omit<Medication, 'id' | 'createdAt'>) => {
+  const saveMedication = async (medicationData: Omit<Medication, 'id' | 'created_at'>) => {
     if (!user) return
 
     try {
@@ -90,7 +99,7 @@ export function useSupabaseMedications() {
     }
   }
 
-  const updateMedication = async (id: string, medicationData: Omit<Medication, 'id' | 'createdAt'>) => {
+  const updateMedication = async (id: string, medicationData: Omit<Medication, 'id' | 'created_at'>) => {
     if (!user) return
 
     try {
@@ -138,8 +147,7 @@ export function useSupabaseMedications() {
         throw error
       }
 
-      await fetchMedications()
-      await fetchLogs()
+      await Promise.all([fetchMedications(), fetchLogs()])
     } catch (error) {
       console.error('Error in deleteMedication:', error)
       throw error
@@ -179,8 +187,7 @@ export function useSupabaseMedications() {
         }
       }
 
-      await fetchMedications()
-      await fetchLogs()
+      await Promise.all([fetchMedications(), fetchLogs()])
       return log
     } catch (error) {
       console.error('Error in logMedicationAction:', error)
@@ -229,8 +236,7 @@ export function useSupabaseMedications() {
         }
       }
 
-      await fetchMedications()
-      await fetchLogs()
+      await Promise.all([fetchMedications(), fetchLogs()])
     } catch (error) {
       console.error('Error in undoMedicationAction:', error)
       throw error
@@ -246,9 +252,6 @@ export function useSupabaseMedications() {
     deleteMedication,
     logMedicationAction,
     undoMedicationAction,
-    refetch: () => {
-      fetchMedications()
-      fetchLogs()
-    }
+    refetch: loadData
   }
 }

@@ -64,7 +64,7 @@ export function Calendar({ medications, logs, currentDate = new Date(), isPremiu
     const year = day.getFullYear();
     
     return medications.filter(med => {
-      const medStartDate = startOfDay(new Date(med.createdAt));
+      const medStartDate = startOfDay(new Date(med.created_at));
       
       if (isBefore(startOfTargetDay, medStartDate)) {
         return false;
@@ -297,7 +297,7 @@ export function Calendar({ medications, logs, currentDate = new Date(), isPremiu
                       <div className="mt-0.5 sm:mt-1 space-y-0.5 sm:space-y-1">
                         {dayMeds.map((med, medIndex) => {
                           const taken = dayLogs.some(log => 
-                            log.medicationId === med.id && 
+                            log.medication_id === med.id && 
                             log.status === 'taken'
                           );
                           

@@ -57,7 +57,7 @@ export function YearlyCalendar({
   const getStatusForDay = (date: Date) => {
     const dayLogs = logs.filter(log => isSameDay(new Date(log.timestamp), date));
     const dayMeds = medications.filter(med => {
-      const medStartDate = new Date(med.createdAt);
+      const medStartDate = new Date(med.created_at);
       if (date < medStartDate) return false;
 
       if (med.schedule.yearRange) {

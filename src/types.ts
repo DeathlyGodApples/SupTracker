@@ -20,12 +20,13 @@ export interface Medication {
   };
   inventory: number;
   notes?: string;
-  createdAt: string;
+  created_at: string; // Changed from createdAt to match database
 }
 
 export interface MedicationLog {
   id: string;
-  medicationId: string;
+  medication_id: string; // Changed from medicationId to match database
+  user_id: string; // Added to match database schema
   timestamp: string;
   status: 'taken' | 'skipped' | 'missed';
 }

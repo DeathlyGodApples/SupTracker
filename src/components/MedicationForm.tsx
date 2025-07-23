@@ -4,7 +4,7 @@ import type { Medication } from '../types';
 
 interface MedicationFormProps {
   medication?: Medication;
-  onSave: (medication: Omit<Medication, 'id' | 'createdAt'>) => void;
+  onSave: (medication: Omit<Medication, 'id' | 'created_at'>) => void;
   onClose: () => void;
 }
 

@@ -76,7 +76,7 @@ export function MedicationCard({
   // Verify if medication is scheduled for today
   const isScheduledForToday = () => {
     const today = new Date();
-    const medStartDate = startOfDay(new Date(medication.createdAt));
+    const medStartDate = startOfDay(new Date(medication.created_at));
     const todayStart = startOfDay(today);
 
     if (isBefore(todayStart, medStartDate)) {

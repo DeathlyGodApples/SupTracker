@@ -32,7 +32,9 @@ export function useStripe() {
       if (error) throw error
 
       const stripe = await stripePromise
-      if (!stripe) throw new Error('Stripe failed to initialize')
+      if (!stripe) {
+        throw new Error('Stripe is unavailable. Please disable your ad blocker and try again, or contact support for alternative payment methods.')
+      }
 
       if (data.url) {
         window.location.href = data.url
@@ -43,7 +45,9 @@ export function useStripe() {
         if (stripeError) throw stripeError
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred')
+      const errorMessage = err instanceof Error ? err.message : 'An error occurred'
+      console.error('Stripe checkout error:', errorMessage)
+      setError(errorMessage)
     } finally {
       setLoading(false)
     }
@@ -64,7 +68,9 @@ export function useStripe() {
 
       window.location.href = data.url
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred')
+      const errorMessage = err instanceof Error ? err.message : 'An error occurred'
+      console.error('Stripe portal error:', errorMessage)
+      setError(errorMessage)
     } finally {
       setLoading(false)
     }

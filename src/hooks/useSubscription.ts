@@ -16,19 +16,24 @@ interface SubscriptionData {
 }
 
 export function useSubscription() {
-  const { user } = useAuth()
+  const { user, profile, loading: profileLoading } = useAuth()
   const [subscription, setSubscription] = useState<SubscriptionData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
+    if (profileLoading) {
+      // Wait for profile to load first
+      return
+    }
+    
     if (user) {
       fetchSubscription()
     } else {
       setSubscription(null)
       setLoading(false)
     }
-  }, [user])
+  }, [user, profileLoading])
 
   const fetchSubscription = async () => {
     try {
@@ -41,8 +46,14 @@ export function useSubscription() {
         .maybeSingle()
 
       if (error) {
-        console.error('Error fetching subscription:', error)
-        setError(error.message)
+        // If Stripe tables don't exist, fall back to profile-based premium status
+        if (error.code === '42P01' || error.message.includes('does not exist')) {
+          console.log('Stripe tables not yet created, using profile-based premium status')
+          setSubscription(null)
+        } else {
+          console.error('Error fetching subscription:', error)
+          setError(error.message)
+        }
       } else {
         setSubscription(data)
       }
@@ -60,9 +71,12 @@ export function useSubscription() {
     return STRIPE_PRODUCTS.find(product => product.priceId === subscription.price_id) || null
   }
 
+  // If we have subscription data, use it
   const isActive = subscription?.subscription_status === 'active'
   const isTrialing = subscription?.subscription_status === 'trialing'
-  const isPremium = isActive || isTrialing
+  
+  // Fall back to profile-based premium status if no subscription data
+  const isPremium = isActive || isTrialing || (profile?.is_premium ?? false)
 
   return {
     subscription,

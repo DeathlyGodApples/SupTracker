@@ -16,17 +16,9 @@ import { useNotifications } from './hooks/useNotifications';
 import type { Medication, MedicationLog, ViewMode } from './types';
 
 export default function App() {
+  // All hooks must be called first, before any conditional logic
   const { user, loading: authLoading } = useAuth();
   const { isPremium, isActive, loading: subscriptionLoading } = useSubscription();
-  
-  // Handle success/cancel pages
-  const currentPath = window.location.pathname;
-  if (currentPath === '/success') {
-    return <SuccessPage />;
-  }
-  if (currentPath === '/cancel') {
-    return <CancelPage />;
-  }
   
   const { 
     medications, 
@@ -38,6 +30,7 @@ export default function App() {
     logMedicationAction,
     undoMedicationAction
   } = useSupabaseMedications();
+  
   const [viewMode, setViewMode] = useState<ViewMode>('medications');
   const [showForm, setShowForm] = useState(false);
   const [editingMedication, setEditingMedication] = useState<Medication | undefined>();
@@ -52,23 +45,8 @@ export default function App() {
     description: '',
     feature: ''
   });
+  
   const { scheduleNotification } = useNotifications();
-
-  // Show auth wrapper if not authenticated
-  if (authLoading || subscriptionLoading) {
-    return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-400">Loading...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!user) {
-    return <AuthWrapper />;
-  }
 
   // Check if user can access analytics (premium feature)
   const canAccessAnalytics = isPremium;
@@ -86,6 +64,31 @@ export default function App() {
   useEffect(() => {
     medications.forEach(scheduleNotification);
   }, [medications, scheduleNotification]);
+
+  // Handle success/cancel pages AFTER all hooks are called
+  const currentPath = window.location.pathname;
+  if (currentPath === '/success') {
+    return <SuccessPage />;
+  }
+  if (currentPath === '/cancel') {
+    return <CancelPage />;
+  }
+
+  // Show auth wrapper if not authenticated - AFTER all hooks are called
+  if (authLoading || subscriptionLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <AuthWrapper />;
+  }
 
   const showUpgradePrompt = (title: string, description: string, feature: string) => {
     setUpgradePrompt({
@@ -106,7 +109,7 @@ export default function App() {
     setEditingMedication(undefined);
   };
 
-  const handleSaveMedication = async (medicationData: Omit<Medication, 'id' | 'createdAt'>) => {
+  const handleSaveMedication = async (medicationData: Omit<Medication, 'id' | 'created_at'>) => {
     // Check medication limit for free users
     if (!canAddMedication && !editingMedication) {
       showUpgradePrompt(

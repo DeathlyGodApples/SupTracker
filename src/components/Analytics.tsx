@@ -16,11 +16,11 @@ export function Analytics({ medications, logs }: AnalyticsProps) {
   const activeMedications = medications.length;
 
   const totalDoses = logs.filter(log => {
-    const medication = medications.find(med => med.id === log.medicationId);
+    const medication = medications.find(med => med.id === log.medication_id);
     if (!medication) return false;
     
     return log.status === 'taken' && 
-           !isBefore(new Date(log.timestamp), startOfDay(new Date(medication.createdAt)));
+           !isBefore(new Date(log.timestamp), startOfDay(new Date(medication.created_at)));
   }).length;
   
   const dailyReminders = medications.reduce((total, med) => {
@@ -32,8 +32,8 @@ export function Analytics({ medications, logs }: AnalyticsProps) {
   
   const calculateComplianceRate = () => {
     const validLogs = logs.filter(log => {
-      const medication = medications.find(med => med.id === log.medicationId);
-      return medication && !isBefore(new Date(log.timestamp), new Date(medication.createdAt));
+      const medication = medications.find(med => med.id === log.medication_id);
+      return medication && !isBefore(new Date(log.timestamp), new Date(medication.created_at));
     });
 
     if (validLogs.length === 0) return 0;
@@ -60,7 +60,7 @@ export function Analytics({ medications, logs }: AnalyticsProps) {
   });
 
   const complianceData = medications.map(med => {
-    const medLogs = logs.filter(log => log.medicationId === med.id);
+    const medLogs = logs.filter(log => log.medication_id === med.id);
     const taken = medLogs.filter(log => log.status === 'taken').length;
     const total = medLogs.length;
     const rate = total === 0 ? 0 : Math.round((taken / total) * 100);
